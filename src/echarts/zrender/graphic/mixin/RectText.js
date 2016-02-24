@@ -1,0 +1,76 @@
+define("crm-modules/common/echarts/zrender/graphic/mixin/RectText", [ "../../contain/text", "../../core/BoundingRect" ], function(require, exports, module) {
+    var textContain = require("../../contain/text");
+    var BoundingRect = require("../../core/BoundingRect");
+    var tmpRect = new BoundingRect();
+    var RectText = function() {};
+    function parsePercent(value, maxValue) {
+        if (typeof value === "string") {
+            if (value.lastIndexOf("%") >= 0) {
+                return parseFloat(value) / 100 * maxValue;
+            }
+            return parseFloat(value);
+        }
+        return value;
+    }
+    function setTransform(ctx, m) {
+        ctx.transform(m[0], m[1], m[2], m[3], m[4], m[5]);
+    }
+    RectText.prototype = {
+        constructor: RectText,
+        drawRectText: function(ctx, rect, textRect) {
+            var style = this.style;
+            var text = style.text;
+            text != null && (text += "");
+            if (!text) {
+                return;
+            }
+            var x;
+            var y;
+            var textPosition = style.textPosition;
+            var distance = style.textDistance;
+            var align = style.textAlign;
+            var font = style.textFont || style.font;
+            var baseline = style.textBaseline;
+            textRect = textRect || textContain.getBoundingRect(text, font, align, baseline);
+            var transform = this.transform;
+            var invTransform = this.invTransform;
+            if (transform) {
+                tmpRect.copy(rect);
+                tmpRect.applyTransform(transform);
+                rect = tmpRect;
+                setTransform(ctx, invTransform);
+            }
+            if (textPosition instanceof Array) {
+                x = rect.x + parsePercent(textPosition[0], rect.width);
+                y = rect.y + parsePercent(textPosition[1], rect.height);
+                align = align || "left";
+                baseline = baseline || "top";
+            } else {
+                var res = textContain.adjustTextPositionOnRect(textPosition, rect, textRect, distance);
+                x = res.x;
+                y = res.y;
+                align = align || res.textAlign;
+                baseline = baseline || res.textBaseline;
+            }
+            ctx.textAlign = align;
+            ctx.textBaseline = baseline;
+            var textFill = style.textFill;
+            var textStroke = style.textStroke;
+            textFill && (ctx.fillStyle = textFill);
+            textStroke && (ctx.strokeStyle = textStroke);
+            ctx.font = font;
+            ctx.shadowColor = style.textShadowColor;
+            ctx.shadowBlur = style.textShadowBlur;
+            ctx.shadowOffsetX = style.textShadowOffsetX;
+            ctx.shadowOffsetY = style.textShadowOffsetY;
+            var textLines = text.split("\n");
+            for (var i = 0; i < textLines.length; i++) {
+                textFill && ctx.fillText(textLines[i], x, y);
+                textStroke && ctx.strokeText(textLines[i], x, y);
+                y += textRect.lineHeight;
+            }
+            transform && setTransform(ctx, transform);
+        }
+    };
+    return RectText;
+});
