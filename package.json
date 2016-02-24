@@ -1,0 +1,26 @@
+{
+  "name": "echarts3-build",
+  "version": "1.0.0",
+  "description": "build echarts3 for cmd pro",
+  "main": "gulpfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "del": "^2.2.0",
+    "fs": "0.0.2",
+    "gulp": "^3.9.0",
+    "gulp-cmd-transit": "^1.0.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-footer": "^1.0.5",
+    "gulp-header": "^1.7.1",
+    "gulp-jsbeautifier": "^1.0.1",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-order": "^1.1.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-sequence": "^0.4.4",
+    "gulp-uglify": "^1.5.1"
+  },
+  "author": "brucecham",
+  "license": "ISC"
+}
